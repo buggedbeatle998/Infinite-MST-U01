@@ -9,34 +9,25 @@ def prims(num, graph):
     _time0 = perf_counter_ns()
     fib_heap = heap()
     for i in range(num):
-        fib_heap.insert(graph[i][0], i)
-    visited = [False for _ in range(num)]
-    cheapest = [2 for _ in range(num)]
+        fib_heap.insert(2, (i, graph[i]))
     cost = -2
     times[0] += perf_counter_ns() - _time0
 
     _time0 = perf_counter_ns()
-    
-    for _ in range(num - 1):
-        node = fib_heap.extract_min().value
-        cost += cheapest[node]
-        for fib_node in fib_heap.iterate(fib_heap.root_list):
-            fib_heap.decrease_key(fib_node, graph[fib_node.value][node])
-        visited[node] = True
-        for edge, weight in enumerate(graph[node]):
-            if not visited[edge] and weight < cheapest[edge]:
-                cheapest[edge] = weight
+    for i in range(num):
+        heap_node = fib_heap.extract_min()
+        cost += heap_node.key
+        _, adj = heap_node.value
+        if fib_heap.root_list:
+            while (fib_node:=fib_heap.root_list.right) is not fib_heap.root_list:
+                fib_heap.decrease_key(fib_node, adj[fib_node.value[0]])
     times[1] += perf_counter_ns() - _time0
     
-    # print(*best_edge)
-    # print(*cheapest)
     return cost
-
-    #return cost
 
 
 def main(num) -> None:
-    sorted_edges = sorted([(random(), {i, j}) for i in range(num) for j in range(i + 1, num)])
+    #sorted_edges = sorted([(random(), {i, j}) for i in range(num) for j in range(i + 1, num)])
     graph = [[0 for _ in range(num)] for _ in range(num)]
     for i in range(num):
         for j in range(i + 1, num):
@@ -52,4 +43,4 @@ def main(num) -> None:
 
 
 if __name__ == "__main__":
-    main(int(argv[1]))
+    main(int(5))
