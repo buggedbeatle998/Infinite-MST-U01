@@ -1,24 +1,20 @@
 from random import random
 from sys import argv
-from time import perf_counter_ns
-from min_d_heap import MinHeap as heap
+from min_d_heap import MinHeap, Node
 
 def prims(num: int, graph: list[list[int]]) -> float:
-    d_heap = heap(2)
-    nodes = [d_heap.add_element(2, i) for i in range(num)]
+    d_heap = MinHeap(5, [Node(2, i) for i in range(num)])
     cost = -2
 
-    _time = perf_counter_ns()
     for _ in range(num):
         heap_node = d_heap.extract_root()
         cost += heap_node.key
-        nodes[val := heap_node.val] = None
+        val = heap_node.val
         
-        for node in nodes:
-            if node and (new_key := graph[val][node.val]) < node.key:
+        for i, node in enumerate(d_heap.heap):
+            if (new_key := graph[val][node.val]) < node.key:
                 node.key = new_key
-                d_heap.swim_up(node.pos)
-    print(perf_counter_ns() - _time)
+                d_heap.swim_up(i)
 
     return cost
 
@@ -34,4 +30,4 @@ def main(num: int) -> None:
 
 
 if __name__ == "__main__":
-    main(int(10))
+    main(int(argv[1]))

@@ -6,7 +6,7 @@ from fib_heap import FibonacciHeap as heap
 
 def prims(num: int, graph: list[list[int]]) -> float:
     fib_heap = heap()
-    nodes = [fib_heap.insert((2, i)) for i in range(num)]
+    nodes = [fib_heap.insert(2, i) for i in range(num)]
     cost = -2
 
     _time = perf_counter_ns()

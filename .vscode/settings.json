@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "stdio.h": "c",
-        "fib_heap.h": "c",
-        "random": "c"
-    }
-}
