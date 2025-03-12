@@ -69,7 +69,7 @@ class FibonacciHeap:
     # modify the key of some node in the heap in O(1) time
     def decrease_key(self, x, k):
         if k > x.key:
-            return None
+            return False
         x.key = k
         y = x.parent
         if y is not None and x.key < y.key:
@@ -77,6 +77,7 @@ class FibonacciHeap:
             self.cascading_cut(y)
         if x.key < self.min_node.key:
             self.min_node = x
+        return True
 
     # merge two fibonacci heaps in O(1) time by concatenating the root lists
     # the root of the new root list becomes equal to the first list and the second

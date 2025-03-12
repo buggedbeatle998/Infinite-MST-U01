@@ -1,23 +1,23 @@
 from random import random
 from sys import argv
 from time import perf_counter_ns
-from min_d_heap import MinHeap as heap
+from fib_heap import FibonacciHeap as heap
+
 
 def prims(num: int, graph: list[list[int]]) -> float:
-    d_heap = heap(2)
-    nodes = [d_heap.add_element(2, i) for i in range(num)]
+    fib_heap = heap()
+    nodes = [fib_heap.insert((2, i)) for i in range(num)]
     cost = -2
 
     _time = perf_counter_ns()
     for _ in range(num):
-        heap_node = d_heap.extract_root()
+        heap_node = fib_heap.extract_min()
         cost += heap_node.key
-        nodes[val := heap_node.val] = None
+        nodes[val := heap_node.value] = None
         
         for node in nodes:
-            if node and (new_key := graph[val][node.val]) < node.key:
-                node.key = new_key
-                d_heap.swim_up(node.pos)
+            if node:
+                fib_heap.decrease_key(node, graph[val][node.value])
     print(perf_counter_ns() - _time)
 
     return cost
@@ -34,4 +34,4 @@ def main(num: int) -> None:
 
 
 if __name__ == "__main__":
-    main(int(10))
+    main(int(argv[1]))
