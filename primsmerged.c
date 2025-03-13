@@ -16,8 +16,6 @@ typedef struct Node {
 
 void init_heap(Node **heap, uint32_t num);
 void heapify(Node **heap, uint32_t index);
-Node *extract_root(Node **heap);
-void swim_up(Node **heap, uint32_t index, float key);
 
 float prims(uint32_t num, float *graph);
 
@@ -47,7 +45,6 @@ float prims(uint32_t num, float *graph) {
     float start = ts.tv_nsec;
 
 
-    
     Node **heap = (Node **)malloc(num * sizeof(Node *));
     for (uint32_t i = 0; i < num; i++) {
         Node *temp = (Node *)malloc(sizeof(Node));
@@ -59,7 +56,9 @@ float prims(uint32_t num, float *graph) {
     float cost = -2.0f;
     
     for (uint32_t n = 0; n < num; n++) {
-        Node *heap_node = extract_root(heap);
+        Node *heap_node = heap[0];
+        heap[0] = heap[--heap_size];
+        heapify(heap, 0);
         cost += heap_node->key;
         uint32_t val = heap_node->val;
         
@@ -68,7 +67,15 @@ float prims(uint32_t num, float *graph) {
             float new_key = graph[val * num + node->val];
             if (new_key < node->key) {
                 node->key = new_key;
-                swim_up(heap, i, new_key);
+                uint32_t index = i;
+                Node *child_node;
+                Node *parent_node;
+                uint32_t parent;
+                while (index && (child_node = heap[index])->key < ((parent_node = heap[parent = (index - 1) / heap_width])->key)) {
+                    heap[parent] = child_node;
+                    heap[index] = parent_node;
+                    index = parent;
+                }
             }
         }
     }
@@ -125,34 +132,4 @@ void heapify(Node **heap, uint32_t index) {
     struct timespec ts2;
     timespec_get(&ts2, TIME_UTC);
     times[1] += (ts2.tv_nsec - start);
-}
-
-Node *extract_root(Node **heap) {
-    struct timespec ts;
-    timespec_get(&ts, TIME_UTC);
-    float start = ts.tv_nsec;
-    Node *root = heap[0];
-    heap[0] = heap[--heap_size];
-    struct timespec ts2;
-    timespec_get(&ts2, TIME_UTC);
-    times[2] += (ts2.tv_nsec - start);
-    heapify(heap, 0);
-    return root;
-}
-
-void swim_up(Node **heap, uint32_t index, float key) {
-    struct timespec ts;
-    timespec_get(&ts, TIME_UTC);
-    float start = ts.tv_nsec;
-    Node *child_node;
-    Node *parent_node;
-    uint32_t parent;
-    while (index && (child_node = heap[index])->key < (key = (parent_node = heap[parent = (index - 1) / heap_width])->key)) {
-        heap[parent] = child_node;
-        heap[index] = parent_node;
-        index = parent;
-    }
-    struct timespec ts2;
-    timespec_get(&ts2, TIME_UTC);
-    times[3] += (ts2.tv_nsec - start);
 }
